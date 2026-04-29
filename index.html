@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Game Score Tracker</title>
+  <title>Rummy Score Tracker</title>
   <style>
     * {
       box-sizing: border-box;
@@ -20,7 +20,7 @@
     }
 
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
     }
 
@@ -38,6 +38,44 @@
       padding: 20px;
       margin-bottom: 16px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .round-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .round-info {
+      flex: 1;
+    }
+
+    .round-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .round-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .round-status {
+      background: #ff9800;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .round-status.complete {
+      background: #4caf50;
     }
 
     .input-group {
@@ -111,6 +149,14 @@
       background: #ff3344;
     }
 
+    button.success {
+      background: #4caf50;
+    }
+
+    button.success:hover {
+      background: #45a049;
+    }
+
     .player-list {
       display: flex;
       flex-direction: column;
@@ -122,9 +168,14 @@
       border-radius: 12px;
       padding: 16px;
       display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .player-header {
+      display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
     }
 
     .player-info {
@@ -138,10 +189,15 @@
       margin-bottom: 4px;
     }
 
-    .player-score {
-      font-size: 24px;
+    .player-total {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .player-total span {
       font-weight: 700;
       color: #667eea;
+      font-size: 18px;
     }
 
     .player-actions {
@@ -158,17 +214,57 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .score-input-group label {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
     }
 
     .score-input-group input {
-      width: 70px;
-      padding: 8px;
-      font-size: 14px;
+      width: 80px;
+      padding: 10px;
+      font-size: 16px;
     }
 
     .score-input-group button {
-      padding: 8px 16px;
+      padding: 10px 20px;
       font-size: 14px;
+    }
+
+    .round-history {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #ddd;
+    }
+
+    .history-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .history-item {
+      background: #e0e0e0;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .history-item.round-win {
+      background: #c8e6c9;
+      color: #2e7d32;
+      font-weight: 600;
     }
 
     .total-section {
@@ -203,19 +299,78 @@
       display: flex;
       gap: 10px;
       justify-content: center;
+      flex-wrap: wrap;
       margin-top: 20px;
     }
 
-    .player-header {
+    .player-header-section {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
     }
 
-    .player-header h2 {
+    .player-header-section h2 {
       font-size: 18px;
       color: #333;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .controls button {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .modal h2 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .modal p {
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .incomplete-player {
+      border-left: 3px solid #ff9800;
+      background: #fff8e1;
     }
 
     @media (max-width: 480px) {
@@ -229,7 +384,6 @@
       }
 
       .player-card {
-        flex-direction: column;
         align-items: stretch;
       }
 
@@ -240,12 +394,20 @@
       .total-value {
         font-size: 36px;
       }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .controls button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🎮 Game Score Tracker</h1>
+    <h1>🃏 Rummy Score Tracker</h1>
 
     <!-- Add Player Section -->
     <div class="card">
@@ -260,11 +422,27 @@
       </div>
     </div>
 
+    <!-- Round Controls -->
+    <div class="card">
+      <div class="round-header">
+        <div class="round-info">
+          <div class="round-label">Current Round</div>
+          <div class="round-number">Round <span id="currentRoundNum">1</span></div>
+        </div>
+        <div class="round-status" id="roundStatus">In Progress</div>
+      </div>
+      
+      <div class="controls">
+        <button class="success" id="nextRoundBtn" onclick="showNextRoundModal()" disabled>Next Round →</button>
+        <button class="secondary" onclick="showHistory()">View History</button>
+      </div>
+    </div>
+
     <!-- Players List -->
     <div class="card">
-      <div class="player-header">
+      <div class="player-header-section">
         <h2>Players</h2>
-        <button class="secondary" onclick="clearAllPlayers()" style="font-size: 12px; padding: 6px 12px;">Clear All</button>
+        <button class="danger" onclick="clearAllPlayers()" style="font-size: 12px; padding: 6px 12px;">Clear All</button>
       </div>
       <div id="playerList" class="player-list">
         <!-- Players will be rendered here -->
@@ -273,31 +451,69 @@
 
     <!-- Total Score -->
     <div class="card total-section">
-      <div class="total-label">Running Total</div>
+      <div class="total-label">Running Total (All Rounds)</div>
       <div class="total-value" id="totalScore">0</div>
     </div>
 
     <div class="actions">
-      <button class="secondary" onclick="resetAllScores()">Reset Scores</button>
+      <button class="secondary" onclick="resetAllScores()">Reset All Scores</button>
+      <button class="secondary" onclick="startNewGame()">New Game</button>
+    </div>
+  </div>
+
+  <!-- Next Round Modal -->
+  <div id="nextRoundModal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <h2>🎉 Round Complete!</h2>
+      <p id="modalMessage">All players have scored. Ready to start the next round?</p>
+      <div class="modal-actions">
+        <button class="secondary" onclick="hideNextRoundModal()">Cancel</button>
+        <button class="success" onclick="confirmNextRound()">Start Next Round</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="modal-overlay" style="display: none;">
+    <div class="modal" style="max-width: 500px; max-height: 80vh; overflow-y: auto;">
+      <h2>📜 Score History</h2>
+      <div id="historyContent" style="text-align: left;"></div>
+      <div class="modal-actions" style="margin-top: 20px;">
+        <button onclick="hideHistory()">Close</button>
+      </div>
     </div>
   </div>
 
   <script>
     // State
     let players = [];
+    let currentRound = 1;
+    let roundHistory = []; // Array of {round: number, scores: [{playerId, score}]}
 
     // Load from localStorage on mount
-    function loadPlayers() {
-      const saved = localStorage.getItem('gameScorePlayers');
-      if (saved) {
-        players = JSON.parse(saved);
+    function loadState() {
+      const savedPlayers = localStorage.getItem('rummyPlayers');
+      const savedRound = localStorage.getItem('rummyCurrentRound');
+      const savedHistory = localStorage.getItem('rummyHistory');
+      
+      if (savedPlayers) {
+        players = JSON.parse(savedPlayers);
       }
+      if (savedRound) {
+        currentRound = parseInt(savedRound);
+      }
+      if (savedHistory) {
+        roundHistory = JSON.parse(savedHistory);
+      }
+      
       render();
     }
 
     // Save to localStorage
-    function savePlayers() {
-      localStorage.setItem('gameScorePlayers', JSON.stringify(players));
+    function saveState() {
+      localStorage.setItem('rummyPlayers', JSON.stringify(players));
+      localStorage.setItem('rummyCurrentRound', currentRound.toString());
+      localStorage.setItem('rummyHistory', JSON.stringify(roundHistory));
     }
 
     // Add a new player
@@ -313,11 +529,12 @@
       const player = {
         id: Date.now(),
         name: name,
-        score: 0
+        totalScore: 0,
+        roundScores: [] // Array of scores for each round
       };
 
       players.push(player);
-      savePlayers();
+      saveState();
       render();
       
       input.value = '';
@@ -328,47 +545,118 @@
     function removePlayer(id) {
       if (confirm('Remove this player?')) {
         players = players.filter(p => p.id !== id);
-        savePlayers();
+        saveState();
         render();
       }
     }
 
-    // Add score to a player
+    // Add score for current round
     function addScore(id) {
       const input = document.getElementById(`score-input-${id}`);
       const points = parseInt(input.value);
       
-      if (isNaN(points) || points < 0) {
-        alert('Please enter a valid positive number');
+      if (isNaN(points)) {
+        alert('Please enter a valid number');
         return;
       }
 
       const player = players.find(p => p.id === id);
       if (player) {
-        player.score += points;
-        savePlayers();
+        // Check if player already has a score for this round
+        const existingScoreIndex = player.roundScores.length >= currentRound ? currentRound - 1 : -1;
+        
+        if (existingScoreIndex >= 0 && player.roundScores[existingScoreIndex] !== undefined) {
+          if (!confirm('This player already has a score for this round. Override?')) {
+            return;
+          }
+          // Remove old score from total
+          player.totalScore -= player.roundScores[existingScoreIndex];
+        }
+        
+        // Ensure we have enough rounds in the array
+        while (player.roundScores.length < currentRound) {
+          player.roundScores.push(0);
+        }
+        
+        // Set the score for current round
+        player.roundScores[currentRound - 1] = points;
+        player.totalScore += points;
+        
+        saveState();
         render();
       }
+      
+      input.value = '';
     }
 
-    // Reset a player's score
-    function resetScore(id) {
-      const player = players.find(p => p.id === id);
-      if (player) {
-        if (confirm(`Reset ${player.name}'s score to 0?`)) {
-          player.score = 0;
-          savePlayers();
-          render();
-        }
+    // Check if all players have scored for current round
+    function allPlayersHaveScored() {
+      if (players.length === 0) return false;
+      return players.every(p => 
+        p.roundScores.length >= currentRound && 
+        p.roundScores[currentRound - 1] !== undefined
+      );
+    }
+
+    // Show next round modal
+    function showNextRoundModal() {
+      if (!allPlayersHaveScored()) {
+        const incomplete = players.filter(p => 
+          p.roundScores.length < currentRound || 
+          p.roundScores[currentRound - 1] === undefined
+        );
+        const names = incomplete.map(p => p.name).join(', ');
+        alert(`Waiting for scores from: ${names}`);
+        return;
       }
+      
+      document.getElementById('nextRoundModal').style.display = 'flex';
+    }
+
+    // Hide next round modal
+    function hideNextRoundModal() {
+      document.getElementById('nextRoundModal').style.display = 'none';
+    }
+
+    // Confirm and start next round
+    function confirmNextRound() {
+      // Save current round to history
+      const roundScores = players.map(p => ({
+        playerId: p.id,
+        playerName: p.name,
+        score: p.roundScores[currentRound - 1] || 0
+      }));
+      
+      roundHistory.push({
+        round: currentRound,
+        scores: roundScores,
+        timestamp: Date.now()
+      });
+      
+      currentRound++;
+      saveState();
+      render();
+      hideNextRoundModal();
     }
 
     // Reset all scores
     function resetAllScores() {
-      if (confirm('Reset all scores to 0?')) {
-        players.forEach(p => p.score = 0);
-        savePlayers();
+      if (confirm('Reset all scores and start from Round 1?')) {
+        players.forEach(p => {
+          p.totalScore = 0;
+          p.roundScores = [];
+        });
+        currentRound = 1;
+        roundHistory = [];
+        saveState();
         render();
+      }
+    }
+
+    // Start new game (keep players, reset scores)
+    function startNewGame() {
+      if (confirm('Start a new game? This will reset all scores but keep players.')) {
+        resetAllScores();
       }
     }
 
@@ -376,19 +664,69 @@
     function clearAllPlayers() {
       if (confirm('Remove all players? This cannot be undone.')) {
         players = [];
-        savePlayers();
+        currentRound = 1;
+        roundHistory = [];
+        saveState();
         render();
       }
     }
 
     // Calculate total score
     function calculateTotal() {
-      return players.reduce((sum, p) => sum + p.score, 0);
+      return players.reduce((sum, p) => sum + p.totalScore, 0);
+    }
+
+    // Show history modal
+    function showHistory() {
+      const content = document.getElementById('historyContent');
+      
+      if (roundHistory.length === 0) {
+        content.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No rounds completed yet.</p>';
+      } else {
+        content.innerHTML = roundHistory.map(round => `
+          <div style="margin-bottom: 16px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+            <div style="font-weight: 600; color: #667eea; margin-bottom: 8px;">Round ${round.round}</div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              ${round.scores.map(s => `
+                <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                  <span>${s.playerName}</span>
+                  <span style="font-weight: 600; color: ${s.score >= 0 ? '#4caf50' : '#ff4757'}">${s.score}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    // Hide history modal
+    function hideHistory() {
+      document.getElementById('historyModal').style.display = 'none';
     }
 
     // Render the player list
     function render() {
       const container = document.getElementById('playerList');
+      
+      // Update round number
+      document.getElementById('currentRoundNum').textContent = currentRound;
+      
+      // Update round status and next round button
+      const allScored = allPlayersHaveScored();
+      const statusEl = document.getElementById('roundStatus');
+      const nextRoundBtn = document.getElementById('nextRoundBtn');
+      
+      if (allScored && players.length > 0) {
+        statusEl.textContent = 'Complete ✓';
+        statusEl.classList.add('complete');
+        nextRoundBtn.disabled = false;
+      } else {
+        statusEl.textContent = 'In Progress';
+        statusEl.classList.remove('complete');
+        nextRoundBtn.disabled = true;
+      }
       
       if (players.length === 0) {
         container.innerHTML = `
@@ -398,28 +736,50 @@
           </div>
         `;
       } else {
-        container.innerHTML = players.map(player => `
-          <div class="player-card">
-            <div class="player-info">
-              <div class="player-name">${escapeHtml(player.name)}</div>
-              <div class="player-score">${player.score} points</div>
-            </div>
-            <div class="player-actions">
+        container.innerHTML = players.map(player => {
+          const hasScoredThisRound = player.roundScores.length >= currentRound && 
+                                     player.roundScores[currentRound - 1] !== undefined;
+          const currentRoundScore = hasScoredThisRound ? player.roundScores[currentRound - 1] : null;
+          
+          return `
+            <div class="player-card ${!hasScoredThisRound && players.length > 1 ? 'incomplete-player' : ''}">
+              <div class="player-header">
+                <div class="player-info">
+                  <div class="player-name">${escapeHtml(player.name)}</div>
+                  <div class="player-total">Total: <span>${player.totalScore}</span></div>
+                </div>
+                <div class="player-actions">
+                  <button class="danger" onclick="removePlayer(${player.id})">✕</button>
+                </div>
+              </div>
+              
               <div class="score-input-group">
+                <label>Round ${currentRound}:</label>
                 <input 
                   type="number" 
                   id="score-input-${player.id}" 
-                  placeholder="+0"
-                  min="0"
+                  placeholder="0"
+                  value="${currentRoundScore !== null ? currentRoundScore : ''}"
                   onkeydown="if(event.key==='Enter')addScore(${player.id})"
                 >
-                <button onclick="addScore(${player.id})">Add</button>
+                <button onclick="addScore(${player.id})">${currentRoundScore !== null ? 'Update' : 'Add'}</button>
               </div>
-              <button class="secondary" onclick="resetScore(${player.id})">Reset</button>
-              <button class="danger" onclick="removePlayer(${player.id})">✕</button>
+              
+              ${player.roundScores.length > 0 ? `
+                <div class="round-history">
+                  <div class="history-title">Previous Rounds:</div>
+                  <div class="history-list">
+                    ${player.roundScores.map((score, idx) => `
+                      <div class="history-item ${idx === player.roundScores.length - 1 && idx < currentRound - 1 ? 'round-win' : ''}">
+                        R${idx + 1}: ${score}
+                      </div>
+                    `).filter((_, idx) => idx < currentRound - 1 || (idx === currentRound - 1 && currentRoundScore === null)).join('')}
+                  </div>
+                </div>
+              ` : ''}
             </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
 
       // Update total
@@ -440,8 +800,15 @@
       }
     });
 
+    // Close modals on outside click
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal-overlay')) {
+        event.target.style.display = 'none';
+      }
+    };
+
     // Initialize
-    loadPlayers();
+    loadState();
   </script>
 </body>
 </html>
